@@ -30,6 +30,19 @@ export default [
         name: '机构信息',
         component: './Merchant/Edit',
       },
+      // 学生列表
+      {
+        path: '/student_list',
+        name: '学生列表',
+        component: './Student/List',
+      },
+      // 学生信息
+      {
+        path: '/student_edit/:id',
+        name: '学生信息',
+        component: './Student/Edit',
+        hideInMenu: true,
+      },
       // Teacherlist
       {
         path: '/month_list',

@@ -1,9 +1,14 @@
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
+import { Icon } from 'antd';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import { getFlatMenuKeys } from '../SiderMenu/SiderMenuUtils';
 import styles from './index.less';
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_1040094_lav5sdhtyoj.js',
+});
 
 export default class TopNavHeader extends PureComponent {
   state = {
@@ -31,8 +36,10 @@ export default class TopNavHeader extends PureComponent {
           <div className={styles.left}>
             <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
-                <img src={logo} alt="logo" />
-                <h1>Ant Design Pro</h1>
+                <IconFont
+                  style={{ fontSize: '30px', margin: '0px 8px', color: '#8856fd' }}
+                  type="icon-picker"
+                />
               </Link>
             </div>
             <div

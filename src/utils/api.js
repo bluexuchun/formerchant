@@ -30,6 +30,14 @@ const ApiClient = {
   },
 
   /**
+   * 获取用户的信息
+   * @param {*} url 
+   */
+  getUserInfo(){
+    return JSON.parse(localStorage.getItem('userInfo'))
+  },
+
+  /**
    * 获取code 解析url
    */
   reduceUrl(url) {

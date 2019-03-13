@@ -74,10 +74,9 @@ export default {
     '@antv/data-set': 'DataSet',
   },
   // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
+  //   '/apiv2': {
+  //     'target': 'http://formerchant.centralsofts.cn/',
+  //     'changeOrigin': true,
   //   },
   // },
   ignoreMomentLocale: true,

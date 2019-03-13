@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Input, Button, Row, Col, Avatar, Form, Upload, message, Radio } from 'antd';
+import { Input, Button, Row, Col, Avatar, Form, Upload, message, Radio,Modal } from 'antd';
 import PageLoading from '@/components/PageLoading';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
@@ -18,9 +18,7 @@ class TeacherEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageUrl: '',
-      addUrl: '/api.php?entry=sys&c=teacher&a=teacher&do=teacher_add',
-      sex: 1,
+      visible:false
     };
   }
 
@@ -32,80 +30,45 @@ class TeacherEdit extends Component {
     });
   };
 
-  // 保存信息
-  submit = e => {
-    let _this = this;
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        if (!this.state.imageUrl) {
-          message.error('请上传教师头像');
-        } else {
-          let data;
-          if (this.props.match.params.id != 0) {
-            data = { Filedata: this.state.imageUrl, ...values, id: this.state.id };
-          } else {
-            data = { Filedata: this.state.imageUrl, ...values };
-          }
-          ApiClient.post(this.state.addUrl, data).then(res => {
-            let result = res.data;
-            if (result.status == 1) {
-              message.success(result.message);
-              setTimeout(() => {
-                _this.props.history.push('/teacher_list');
-              }, 1000);
-            } else {
-              message.error(result.message);
-            }
-          });
-        }
-      }
-    });
-  };
-
-  handleChange = info => {
-    let _this = this;
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      let result = info.file.response;
-      if (result.status == 1) {
-        message.success(result.message);
-        let url = result.data.url;
-        _this.setState({
-          imageUrl: url,
-        });
-      } else {
-        message.error(result.message);
-      }
-    }
-  };
-
-  onChangeSex = e => {
+  showModal = () => {
     this.setState({
-      sex: e.target.value,
+      visible: true,
     });
-  };
+  }
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  }
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  }
 
   render() {
     const { match, children, location } = this.props;
     let { userInfo } = this.state;
+    let url = 'http://teacher.centralsofts.cn/h5/auth.html?merchantid=' + userInfo.id
+    url = encodeURI(url)
     const formItemSmallLayout = {
       labelCol: {
-        xs: { span: 3 },
+        xs: { span: 8 },
         sm: { span: 3 },
       },
       wrapperCol: {
-        xs: { span: 6 },
+        xs: { span: 16 },
         sm: { span: 6 },
       },
     };
     const formDefaultLayout = {
       labelCol: {
         xs: {
-          span: 3,
+          span: 8,
         },
         sm: {
           span: 3,
@@ -113,7 +76,7 @@ class TeacherEdit extends Component {
       },
       wrapperCol: {
         xs: {
-          span: 10,
+          span: 16,
         },
         sm: {
           span: 10,
@@ -137,10 +100,10 @@ class TeacherEdit extends Component {
       <GridContent>
         <Suspense fallback={<PageLoading />}>
           <Row gutter={12} style={{ padding: '20px 0px' }}>
-            <Col span={6} style={{ textAlign: 'center' }}>
+            <Col span={6} xs={24} sm={6} style={{ textAlign: 'center' }}>
               <Avatar size={120} src={userInfo.cover} />
             </Col>
-            <Col span={14}>
+            <Col span={14} xs={22} sm={14}>
               <div className={styles.tabTitle}>机构信息</div>
               <Form onSubmit={this.submit}>
                 <FormItem {...formItemSmallLayout} label="机构名称：">
@@ -153,6 +116,19 @@ class TeacherEdit extends Component {
                   <Input defaultValue={userInfo.mobile} disabled />
                 </FormItem>
               </Form>
+              <div>
+                <Button 
+                  type="primary" onClick={this.showModal}
+                >点击生成公众号链接</Button>
+                <Modal
+                  title="公众号链接"
+                  visible={this.state.visible}
+                  onOk={this.handleOk}
+                  onCancel={this.handleCancel}
+                >
+                  <p>{url}</p>
+                </Modal>
+              </div>
             </Col>
           </Row>
         </Suspense>

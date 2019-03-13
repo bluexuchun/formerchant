@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Input, Button, Table, message, Modal,Tag } from 'antd';
+import { Input, Button, Table, message, Modal,Avatar } from 'antd';
 import PageLoading from '@/components/PageLoading';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
@@ -11,54 +11,38 @@ import ApiClient from '@/utils/api';
 
 const confirm = Modal.confirm;
 @connect()
-class MonthList extends Component {
+class StudentList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
       columns: [
         {
-          title: '序号',
-          dataIndex: 'id',
-          key: 'id',
-          width: 100,
+          title: 'Uid',
+          dataIndex: 'uid',
+          key: 'uid',
+          width: 180,
         },
         {
-          title: '月卡名称',
-          dataIndex: 'title',
-          key: 'title',
-          width: 200,
-        },
-        {
-          title: '价钱',
-          dataIndex: 'money',
-          key: 'money',
-          width:180
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          width:150,
+          title: '头像',
+          dataIndex: 'avatar',
+          key: 'avatar',
           render:(text,record) => {
-            let word,color
-            if(record.status == 1){
-              word = '开启'
-              color = '#2db7f5'
-            }else{
-              word = '关闭'
-              color = '#f50'
-            }
             return (
-              <Tag color={color}>{word}</Tag>
+              <Avatar size={50} src={record.avatar}></Avatar>
             )
           }
         },
         {
-          title: '排序',
-          dataIndex: 'displayorder',
-          key: 'displayorder',
-          width:150
+          title: '昵称',
+          dataIndex: 'nickname',
+          key: 'nickname',
+          width: 200,
+        },
+        {
+          title: 'openid',
+          dataIndex: 'openid',
+          key: 'openid',
         },
         {
           title: '操作',
@@ -66,24 +50,17 @@ class MonthList extends Component {
           width: 250,
           align: 'center',
           render: (text, record) => {
-            return (
+            return(
               <span>
                 <a
                   href="javascript:void(0);"
-                  onClick={() => this.editMonth(record.id)}
+                  onClick={() => this.editStudent(record.uid)}
                   style={{ color: '#8856FD', marginRight: '40px' }}
                 >
-                  编辑
+                  查看详情
                 </a>
-                <a
-                  href="javascript:void(0);"
-                  onClick={() => this.deleteMonth(record.id)}
-                  style={{ color: '#F67066' }}
-                >
-                  删除
-                </a>
-              </span>
-            );
+            </span>
+            )
           },
         },
       ],
@@ -97,9 +74,8 @@ class MonthList extends Component {
   init = () => {
     let _this = this
     let userInfo = ApiClient.getUserInfo()
-    ApiClient.post('/api.php?entry=sys&c=business&a=list&do=month_list', {bid:userInfo.id}).then(res => {
+    ApiClient.post('/api.php?entry=sys&c=business&a=student&do=business_member',{merchantid:userInfo.id}).then(res => {
       let result = res.data;
-      console.log(result)
       if (result.status == 1) {
         _this.setState({
           data:result.data,
@@ -114,21 +90,17 @@ class MonthList extends Component {
     });
   };
 
-  addMonth = () => {
-    this.props.history.push('month_edit/0');
+  editStudent = id => {
+    this.props.history.push('student_edit/' + id);
   };
 
-  editMonth = id => {
-    this.props.history.push('month_edit/' + id);
-  };
-
-  deleteMonth = id => {
+  deleteTeacher = id => {
     let _this = this;
     confirm({
       title: '警告',
-      content: '你确认删除该月卡？',
+      content: '你确认删除该教师？',
       onOk() {
-        ApiClient.post('/api.php?entry=sys&c=business&a=month&do=month_del', { id: id }).then(
+        ApiClient.post('/api.php?entry=sys&c=teacher&a=teacher&do=teacher_del', { id: id }).then(
           res => {
             let result = res.data;
             if (result.status == 1) {
@@ -147,24 +119,15 @@ class MonthList extends Component {
   render() {
     const { match, children, location } = this.props;
 
-    const { loading, selectedRowKeys } = this.state;
+    const { loading } = this.state
+
 
     return (
       <GridContent>
         <Suspense fallback={<PageLoading />}>
           {/* 统计 */}
-          <IntroCommon />
-
-          {/* 新增按钮 */}
-          <div className={styles.btngroup}>
-            <Button
-              className={styles.addmonth}
-              onClick={() => this.addMonth()}
-            >
-              +新增月卡
-            </Button>
-          </div>
-
+          {/* <IntroCommon /> */}
+          
           {/* 表格 */}
           <Table columns={this.state.columns} dataSource={this.state.data} loading={loading} />
         </Suspense>
@@ -173,4 +136,4 @@ class MonthList extends Component {
   }
 }
 
-export default MonthList;
+export default StudentList;

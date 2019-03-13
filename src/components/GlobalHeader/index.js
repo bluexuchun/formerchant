@@ -5,7 +5,12 @@ import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
 
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_1040094_lav5sdhtyoj.js',
+});
+
 export default class GlobalHeader extends PureComponent {
+  
   componentWillUnmount() {
     this.triggerResizeEvent.cancel();
   }
@@ -28,7 +33,10 @@ export default class GlobalHeader extends PureComponent {
       <div className={styles.header}>
         {isMobile && (
           <Link to="/" className={styles.logo} key="logo">
-            <img src={logo} alt="logo" width="32" />
+            <IconFont
+              style={{ fontSize: '30px', margin: '0px 8px', color: '#8856fd' }}
+              type="icon-picker"
+            />
           </Link>
         )}
         <span className={styles.trigger} onClick={this.toggle}>
