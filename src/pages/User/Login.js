@@ -22,23 +22,6 @@ class LoginPage extends Component {
     this.setState({ type });
   };
 
-  onGetCaptcha = () =>
-    new Promise((resolve, reject) => {
-      this.loginForm.validateFields(['mobile'], {}, (err, values) => {
-        if (err) {
-          reject(err);
-        } else {
-          const { dispatch } = this.props;
-          dispatch({
-            type: 'login/getCaptcha',
-            payload: values.mobile,
-          })
-            .then(resolve)
-            .catch(reject);
-        }
-      });
-    });
-
   handleSubmit = (err, values) => {
     const { type } = this.state;
     if (!err) {
@@ -82,12 +65,12 @@ class LoginPage extends Component {
               !submitting &&
               this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
             <UserName
-              name="userName"
+              name="username"
               placeholder="请输入用户名"
               rules={[
                 {
                   required: true,
-                  message: "用户名不能为空",
+                  message: '用户名不能为空',
                 },
               ]}
             />
@@ -97,7 +80,7 @@ class LoginPage extends Component {
               rules={[
                 {
                   required: true,
-                  message: "密码不能为空",
+                  message: '密码不能为空',
                 },
               ]}
               onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}

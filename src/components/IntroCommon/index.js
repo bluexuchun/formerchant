@@ -30,32 +30,18 @@ export default class IntroCommon extends PureComponent {
   constructor(props) {
     super(props);
     const { defaultNums } = this.props;
-    if(defaultNums){
+    if (defaultNums) {
       this.state = {
         nums: defaultNums,
       };
-    }else{
+    } else {
       const defaults = [
         {
           id: 'appointClass',
-          title: '已预约课程',
+          title: '已加入学生',
           num: 10,
           backgroundColor: '#36DF97',
           icon: 'icon-appoint',
-        },
-        {
-          id: 'correcthomework',
-          title: '待批改作业',
-          num: 10,
-          backgroundColor: '#F6883D',
-          icon: 'icon-book',
-        },
-        {
-          id: 'teachernums',
-          title: '老师数量',
-          num: 20,
-          backgroundColor: '#41AFEE',
-          icon: 'icon-people',
         },
         {
           id: 'allmoneys',
@@ -69,7 +55,6 @@ export default class IntroCommon extends PureComponent {
         nums: defaults,
       };
     }
-    
   }
 
   render() {

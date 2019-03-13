@@ -24,121 +24,38 @@ export default [
         name: '机构首页',
         component: './Dashboard/Analysis',
       },
+      // 机构信息
+      {
+        path: '/merchant',
+        name: '机构信息',
+        component: './Merchant/Edit',
+      },
       // Teacherlist
       {
-        path: '/teacher_list',
-        name: '老师管理',
-        component: './Teacher/List',
+        path: '/month_list',
+        name: '月卡管理',
+        component: './Month/List',
       },
       // TeacherEdit
       {
-        path: '/teacher_edit/:id',
-        name: '老师编辑',
-        component: './Teacher/Edit',
+        path: '/month_edit/:id',
+        name: '查看月卡',
+        component: './Month/Edit',
         hideInMenu: true,
       },
-      // CourseManage
+      // Teacherlist
       {
-        path: '/course',
-        name: '课程管理',
-        routes: [
-          {
-            path: '/course/appointlist',
-            name: '预约课程',
-            component: './Course/AppointCourse/AppointList',
-          },
-          {
-            path: '/course/appointedit/:id',
-            name: '查看课程',
-            component: './Course/AppointCourse/AppointEdit',
-            hideInMenu: true,
-          },
-          {
-            path: '/course/list',
-            name: '作业批改',
-            component: './Course/NormalCourse/List',
-          },
-          {
-            path: '/course/edit/:id',
-            name: '作业编辑',
-            component: './Course/NormalCourse/Edit',
-            hideInMenu: true,
-          },
-        ],
+        path: '/once_list',
+        name: '次卡管理',
+        component: './Once/List',
       },
+      // TeacherEdit
       {
-        path:'/arrange',
-        name:'开放时间',
-        component: './Arrange/index',
-        hideInMenu:true
-      },
-      {
-        path: '/textbook_list',
-        name: '教科书管理',
-        component: './Textbook/List',
-      },
-      {
-        path: '/textbook_edit/:id',
-        name: '教科书编辑',
-        component: './Textbook/Edit',
+        path: '/once_edit/:id',
+        name: '查看次卡',
+        component: './Once/Edit',
         hideInMenu: true,
       },
-      // {
-      //   name: 'account',
-      //   path: '/account',
-      //   routes: [
-      //     {
-      //       path: '/account/center',
-      //       name: 'center',
-      //       component: './Account/Center/Center',
-      //       routes: [
-      //         {
-      //           path: '/account/center',
-      //           redirect: '/account/center/articles',
-      //         },
-      //         {
-      //           path: '/account/center/articles',
-      //           component: './Account/Center/Articles',
-      //         },
-      //         {
-      //           path: '/account/center/applications',
-      //           component: './Account/Center/Applications',
-      //         },
-      //         {
-      //           path: '/account/center/projects',
-      //           component: './Account/Center/Projects',
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       path: '/account/settings',
-      //       name: 'settings',
-      //       component: './Account/Settings/Info',
-      //       routes: [
-      //         {
-      //           path: '/account/settings',
-      //           redirect: '/account/settings/base',
-      //         },
-      //         {
-      //           path: '/account/settings/base',
-      //           component: './Account/Settings/BaseView',
-      //         },
-      //         {
-      //           path: '/account/settings/security',
-      //           component: './Account/Settings/SecurityView',
-      //         },
-      //         {
-      //           path: '/account/settings/binding',
-      //           component: './Account/Settings/BindingView',
-      //         },
-      //         {
-      //           path: '/account/settings/notification',
-      //           component: './Account/Settings/NotificationView',
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
       {
         component: '404',
       },

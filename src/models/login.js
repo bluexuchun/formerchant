@@ -15,34 +15,35 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
+      let status = localStorage.getItem('status');
+      if (status) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: status,
+            currentAuthority: 'admin',
+            userInfo: localStorage.getItem('userInfo'),
+          },
+        });
+      } else {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: response.data.status == 1 ? true : false,
+            currentAuthority: 'admin',
+            userInfo: response.data.data,
+          },
+        });
+      }
+
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.status === 200) {
         reloadAuthorized();
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = redirect;
-            return;
-          }
-        }
+        localStorage.setItem('userInfo', JSON.stringify(response.data.data));
+        localStorage.setItem('status', true);
+        window.location.href = '/';
         yield put(routerRedux.replace(redirect || '/'));
       }
-    },
-
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
     },
 
     *logout(_, { put }) {
@@ -51,8 +52,11 @@ export default {
         payload: {
           status: false,
           currentAuthority: 'guest',
+          userInfo: {},
         },
       });
+      localStorage.setItem('userInfo', {});
+      localStorage.setItem('status', false);
       reloadAuthorized();
       yield put(
         routerRedux.push({
@@ -72,6 +76,7 @@ export default {
         ...state,
         status: payload.status,
         type: payload.type,
+        userInfo: payload.userInfo,
       };
     },
   },
