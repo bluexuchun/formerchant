@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Input, Button, Row, Col, Avatar, Form, Upload, message,Radio } from 'antd';
+import { Input, Button, Row, Col, Avatar, Form, Upload, message,Radio,Table } from 'antd';
 import PageLoading from '@/components/PageLoading';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
@@ -18,18 +18,81 @@ class StudentEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      loading: true,
+      columns: [
+        {
+          title: '序号',
+          dataIndex: 'id',
+          key: 'id',
+          width: 180,
+        },
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          key: 'name',
+          width: 200,
+        },
+        {
+          title: '年龄',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title:'开放时间',
+          width: 250,
+          align: 'center',
+          render:(text,record) => {
+            let id = [record.id]
+            return (
+              <Button type="primary" onClick={() => this.arrange(id)}>添加开放时间</Button>
+            )
+          }
+        },
+        {
+          title: '操作',
+          key: 'action',
+          width: 250,
+          align: 'center',
+          render: (text, record) => {
+            return(
+              <span>
+                <a
+                  href="javascript:void(0);"
+                  onClick={() => this.editTeacher(record.id)}
+                  style={{ color: '#8856FD', marginRight: '40px' }}
+                >
+                  编辑
+                </a>
+                <a
+                  href="javascript:void(0);"
+                  onClick={() => this.deleteTeacher(record.id)}
+                  style={{ color: '#F67066' }}
+                >
+                  删除
+                </a>
+            </span>
+            )
+          },
+        },
+      ],
     };
   }
 
   componentWillMount = () => {
     let _this = this;
     let id = this.props.match.params.id;
+    _this.getDetail(id)
+  }
+
+  /**
+   * getdetail
+   */
+  getDetail = (id) => {
+    let _this = this
     if (id != 0) {
       ApiClient.post('/api.php?entry=sys&c=business&a=student&do=member_detail', { uid: id }).then(
         res => {
           let result = res.data;
-          console.log(result)
           if (result.status == 1) {
             _this.setState({
               ...result.data
@@ -42,6 +105,7 @@ class StudentEdit extends Component {
 
   render() {
     const { match, children, location } = this.props;
+    let { loading } = this.state
     const formItemSmallLayout = {
       labelCol: {
         xs: { span: 3 },
@@ -132,6 +196,8 @@ class StudentEdit extends Component {
               </Form>
             </Col>
           </Row>
+          {/* 表格 */}
+          <Table columns={this.state.columns} dataSource={this.state.data} loading={loading} />
         </Suspense>
       </GridContent>
     );

@@ -69,6 +69,18 @@ export default [
         component: './Once/Edit',
         hideInMenu: true,
       },
+      // TeacherEdit
+      {
+        path: '/balence',
+        name: '财务中心',
+        routes:[
+          {
+            path:'/balence/list',
+            name:'收入',
+            component:'./Balence/List'
+          }
+        ]
+      },
       {
         component: '404',
       },

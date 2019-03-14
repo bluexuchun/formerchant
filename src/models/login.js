@@ -16,7 +16,7 @@ export default {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
       let status = localStorage.getItem('status');
-      if (status) {
+      if (status == 'ok') {
         yield put({
           type: 'changeLoginStatus',
           payload: {
@@ -29,18 +29,19 @@ export default {
         yield put({
           type: 'changeLoginStatus',
           payload: {
-            status: response.data.status == 1 ? true : false,
-            currentAuthority: 'admin',
+            status: response.data.status == 1 ? 'ok' : 'error',
+            currentAuthority: response.data.status == 1 ? 'admin' : 'guest',
+            type:response.data.status == 1 ? 'admin' : 'account',
             userInfo: response.data.data,
           },
         });
       }
 
       // Login successfully
-      if (response.status === 200) {
+      if (response.data.status === 1) {
         reloadAuthorized();
         localStorage.setItem('userInfo', JSON.stringify(response.data.data));
-        localStorage.setItem('status', true);
+        localStorage.setItem('status', 'ok');
         window.location.href = '/';
         yield put(routerRedux.replace(redirect || '/'));
       }
