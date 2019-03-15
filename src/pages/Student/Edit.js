@@ -27,53 +27,30 @@ class StudentEdit extends Component {
           width: 180,
         },
         {
-          title: '姓名',
-          dataIndex: 'name',
-          key: 'name',
+          title: '订单号',
+          dataIndex: 'ordersn',
+          key: 'ordersn',
           width: 200,
         },
         {
-          title: '年龄',
-          dataIndex: 'age',
-          key: 'age',
+          title: '价格',
+          dataIndex: 'price',
+          key: 'price',
         },
         {
-          title:'开放时间',
-          width: 250,
-          align: 'center',
+          title: '类型',
+          key: 'type',
           render:(text,record) => {
-            let id = [record.id]
             return (
-              <Button type="primary" onClick={() => this.arrange(id)}>添加开放时间</Button>
+              <span>{record.type == 2 ? '次卡' : '月卡'}</span>
             )
           }
         },
         {
-          title: '操作',
-          key: 'action',
-          width: 250,
-          align: 'center',
-          render: (text, record) => {
-            return(
-              <span>
-                <a
-                  href="javascript:void(0);"
-                  onClick={() => this.editTeacher(record.id)}
-                  style={{ color: '#8856FD', marginRight: '40px' }}
-                >
-                  编辑
-                </a>
-                <a
-                  href="javascript:void(0);"
-                  onClick={() => this.deleteTeacher(record.id)}
-                  style={{ color: '#F67066' }}
-                >
-                  删除
-                </a>
-            </span>
-            )
-          },
-        },
+          title: '支付时间',
+          dataIndex: 'paytime',
+          key: 'paytime'
+        }
       ],
     };
   }
@@ -82,10 +59,11 @@ class StudentEdit extends Component {
     let _this = this;
     let id = this.props.match.params.id;
     _this.getDetail(id)
+    _this.getRecord(id)
   }
 
   /**
-   * getdetail
+   * 获取用户的详细信息
    */
   getDetail = (id) => {
     let _this = this
@@ -103,9 +81,33 @@ class StudentEdit extends Component {
     }
   }
 
+  /**
+   * 获取用户的支付记录
+   */
+  getRecord = (id) => {
+    let _this = this
+    if (id != 0) {
+      ApiClient.post('/api.php?entry=app&c=member&a=record&do=record', { uid: id }).then(
+        res => {
+          let result = res.data;
+          if (result.status == 1) {
+            _this.setState({
+              record:result.data,
+              loading:false
+            });
+          }
+        }
+      );
+    }
+  }
+
+  /**
+   * 获取
+   */
+
   render() {
     const { match, children, location } = this.props;
-    let { loading } = this.state
+    let { loading,record } = this.state
     const formItemSmallLayout = {
       labelCol: {
         xs: { span: 3 },
@@ -197,7 +199,7 @@ class StudentEdit extends Component {
             </Col>
           </Row>
           {/* 表格 */}
-          <Table columns={this.state.columns} dataSource={this.state.data} loading={loading} />
+          <Table columns={this.state.columns} dataSource={record} loading={loading} />
         </Suspense>
       </GridContent>
     );

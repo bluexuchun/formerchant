@@ -25,53 +25,35 @@ class BalenceList extends Component {
           width: 180,
         },
         {
-          title: '姓名',
-          dataIndex: 'name',
-          key: 'name',
+          title: '订单号',
+          dataIndex: 'ordersn',
+          key: 'ordersn',
           width: 200,
         },
         {
-          title: '年龄',
-          dataIndex: 'age',
-          key: 'age',
+          title: '用户昵称',
+          dataIndex: 'nickname',
+          key: 'nickname',
         },
         {
-          title:'开放时间',
-          width: 250,
-          align: 'center',
+          title: '价格',
+          dataIndex: 'price',
+          key: 'price',
+        },
+        {
+          title: '类型',
+          key: 'type',
           render:(text,record) => {
-            let id = [record.id]
             return (
-              <Button type="primary" onClick={() => this.arrange(id)}>添加开放时间</Button>
+              <span>{record.type == 2 ? '次卡' : '月卡'}</span>
             )
           }
         },
         {
-          title: '操作',
-          key: 'action',
-          width: 250,
-          align: 'center',
-          render: (text, record) => {
-            return(
-              <span>
-                <a
-                  href="javascript:void(0);"
-                  onClick={() => this.editTeacher(record.id)}
-                  style={{ color: '#8856FD', marginRight: '40px' }}
-                >
-                  编辑
-                </a>
-                <a
-                  href="javascript:void(0);"
-                  onClick={() => this.deleteTeacher(record.id)}
-                  style={{ color: '#F67066' }}
-                >
-                  删除
-                </a>
-            </span>
-            )
-          },
-        },
+          title: '支付时间',
+          dataIndex: 'paytime',
+          key: 'paytime'
+        }
       ],
     };
   }
@@ -81,16 +63,20 @@ class BalenceList extends Component {
   };
 
   init = () => {
+    let userInfo = ApiClient.getUserInfo()
     let data = [];
-    ApiClient.post('/api.php?entry=sys&c=teacher&a=teacherList&do=teacherList', {}).then(res => {
+    ApiClient.post('/api.php?entry=sys&c=business&a=record&do=record', {bid:userInfo.id}).then(res => {
       let result = res.data;
       if (result.status == 1) {
         if (result.data.length > 0) {
           result.data.map((v, i) => {
             let dataItem = {
               id: v.id,
-              name: v.teacherName,
-              age: v.age,
+              nickname: v.uid.nickname,
+              price: v.price,
+              ordersn:v.ordersn,
+              paytime:v.paytime,
+              type:v.type
             };
             data.push(dataItem);
           });
@@ -103,53 +89,10 @@ class BalenceList extends Component {
     });
   };
 
-  arrange = id => {
-    let item = id
-    const { history } = this.props
-    history.push({
-      pathname:'arrange/',
-      state:{
-        id:JSON.stringify(item)
-      }
-    })
-    // this.props.history.push('arrange/' + JSON.stringify(item));
-  }
-
-  addTeacher = () => {
-    this.props.history.push('teacher_edit/0');
-  };
-
-  editTeacher = id => {
-    this.props.history.push('teacher_edit/' + id);
-  };
-
-  deleteTeacher = id => {
-    let _this = this;
-    confirm({
-      title: '警告',
-      content: '你确认删除该教师？',
-      onOk() {
-        ApiClient.post('/api.php?entry=sys&c=teacher&a=teacher&do=teacher_del', { id: id }).then(
-          res => {
-            let result = res.data;
-            if (result.status == 1) {
-              message.success(result.message);
-              _this.init();
-            }
-          }
-        );
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
-  };
-
   render() {
     const { match, children, location } = this.props;
 
     const { loading } = this.state
-
 
     return (
       <GridContent>
